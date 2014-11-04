@@ -18,4 +18,4 @@ Various other routines are available in suitably optimized versions:
 * `S` for computing `S(alpha)` in a manner appropriate for various types of the input data,
 * `blocks2target` for converting a starting matrix and diagonal blocks descriptor to an appropriate target matrix.
 
-Weights are not included at the moment, but these can easily be handled by the usual Python's routines for working with general matrices.
+The support for weights is not included at the moment, but these can easily be handled by the usual Python's routines for working with general matrices.
