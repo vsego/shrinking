@@ -16,6 +16,7 @@ Various other routines are available in suitably optimized versions:
 
 * `checkPD` for checking if a given matrix is positive definite (can be used outside of the shrinking context),
 * `S` for computing `S(alpha)` in a manner appropriate for various types of the input data (each of the variants can also be invoked directly via specialised functions),
+* `x` for computing the eigenvector associated with the smallest eigenvalue (used by Newton's method),
 * `blocks2target` for converting a starting matrix and a diagonal blocks descriptor to an appropriate target matrix.
 
 It is possible to incorporate weights into the target matrix that reflect the confidence with which individual matrix entries are known. See the paper above for details on how to do this.
