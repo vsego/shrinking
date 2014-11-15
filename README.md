@@ -30,3 +30,8 @@ Requirements
 ---
 
 The module requires `scipy.linalg` from [SciPy](http://www.scipy.org/) and a working LAPACK library. [OpenBLAS](http://www.openblas.net/) proved to be about 1.5-2.5 times faster than [ATLAS](http://math-atlas.sourceforge.net/) with this module (tested on Fedora 20 x86_64).
+
+License
+---
+
+See `license.txt` for licensing information.
