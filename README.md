@@ -4,8 +4,7 @@
 About
 ---
 
-`shrinking` is a Python module incorporating methods for repairing invalid (indefinite) covariance and correlation matrices, based on the paper  
-Higham, Strabić, Šego, "[Restoring Definiteness via Shrinking, with an Application to Correlation Matrices with a Fixed Block](http://eprints.ma.man.ac.uk/2191/)"
+`shrinking` is a Python module incorporating methods for repairing invalid (indefinite) covariance and correlation matrices, based on the paper Higham, Strabić, Šego, "[Restoring Definiteness via Shrinking, with an Application to Correlation Matrices with a Fixed Block](http://eprints.ma.man.ac.uk/2191/)"
 
 There is one significant difference between the algorithms in the paper and in this module: the paper handles the cases of both positive definite and positive semidefinite targets, while this module is mostly restricted to the positive definite ones, because the semidefinite case is rarely an issue in practice, and it would significantly complicate the code.
 
