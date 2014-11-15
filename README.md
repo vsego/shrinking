@@ -1,7 +1,8 @@
 `shrinking` - a Python Module for Restoring Definiteness via Shrinking
 ===
 
-# About
+About
+---
 
 `shrinking` is a Python module incorporating methods for repairing invalid (indefinite) covariance and correlation matrices, based on the paper  
 Higham, Strabić, Šego, "[Restoring Definiteness via Shrinking, with an Application to Correlation Matrices with a Fixed Block](http://eprints.ma.man.ac.uk/2191/)"
@@ -25,6 +26,7 @@ Various other routines are available in suitably optimized versions:
 
 It is possible to incorporate weights into the target matrix that reflect the confidence with which individual matrix entries are known. See the paper above for details on how to do this.
 
-# Requirements
+Requirements
+---
 
 The module requires `scipy.linalg` from [SciPy](http://www.scipy.org/) and a working LAPACK library. [OpenBLAS](http://www.openblas.net/) proved to be about 1.5-2.5 times faster than [ATLAS](http://math-atlas.sourceforge.net/) with this module (tested on Fedora 20 x86_64).
