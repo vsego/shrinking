@@ -610,7 +610,7 @@ def newton(M0, *, M1=None, fbs=None, tol=10**(-6), maxIterations=None, checkM0=T
         else:
             vecx = x(Sdif(M0, dM0M1, alpha))
         newAlpha = (vecx.T * M0 * vecx)[0, 0] / (vecx.T * dM0M1 * vecx)[0, 0]
-        if abs(newAlpha - alpha) < tol * newAlpha:
+        if abs(newAlpha - alpha) < tol:
             return newAlpha
         alpha = newAlpha
 
