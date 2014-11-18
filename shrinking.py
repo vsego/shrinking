@@ -25,8 +25,9 @@ lastIterations = 0
 
 ### Custom exceptions ###
 
-class NotConvergingError(Exception):
-    pass
+class NotConvergingError(ValueError):
+    def __init__(self, msg, alpha):
+        self.alpha = alpha
 
 
 
@@ -34,7 +35,7 @@ class NotConvergingError(Exception):
 
 from scipy.linalg.lapack import get_lapack_funcs
 
-def checkPD(A, exception = True):
+def checkPD(A, exception=True):
     """
     Check if `A` is positive definite; return False or raise exception if not.
 
@@ -184,7 +185,7 @@ def ScorrId(M0, alpha):
     np.fill_diagonal(res, 1)
     return res
 
-def S(M0, alpha, *, M1 = None, dM0M1 = None, fbs = None):
+def S(M0, alpha, *, M1=None, dM0M1=None, fbs=None):
     """
     :math:`S(\\alpha)`, as defined in the paper, computed using the optimal
     method (with respect to the given input).
@@ -294,7 +295,7 @@ def initCheckM0(M0):
     else:
         return True
 
-def initialize(M0, M1, fbs, checkM0 = True, buildM1 = True):
+def initialize(M0, M1, fbs, checkM0=True, buildM1=True):
     """
     The common part for all three methods: verification of the initial conditions
     of the input parameters and creation of `M1` via `fbs`, if so requested.
@@ -354,7 +355,7 @@ def initialize(M0, M1, fbs, checkM0 = True, buildM1 = True):
 
 ### Bisections ###
 
-def bisection(M0, *, M1 = None, fbs = None, tol = 10**(-6), checkM0 = True):
+def bisection(M0, *, M1=None, fbs=None, tol=10**(-6), checkM0=True):
     """
     Implementation of the bisection algorithm.
 
@@ -406,7 +407,7 @@ def bisection(M0, *, M1 = None, fbs = None, tol = 10**(-6), checkM0 = True):
             right = alpha
     return right
 
-def bisectionFB(M0, fbSize = None, tol = 10**(-6), which = 2, checkM0 = True):
+def bisectionFB(M0, fbSize=None, tol=10**(-6), which=2, checkM0=True):
     """
     A special case implementation of the bisection algorithm
     for correlation matrices (i.e., M0 must have a unit diagonal),
@@ -565,7 +566,7 @@ def x(S):
     #w, v = scipy.linalg.eigh(S, check_finite = False)
     #return np.matrix(v[:, 0:1])
 
-def newton(M0, *, M1 = None, fbs = None, tol = 10**(-6), maxIterations = None, checkM0 = True):
+def newton(M0, *, M1=None, fbs=None, tol=10**(-6), maxIterations=None, checkM0=True):
     """
     Implementation of the Newton's algorithm.
 
@@ -603,7 +604,7 @@ def newton(M0, *, M1 = None, fbs = None, tol = 10**(-6), maxIterations = None, c
     while True:
         lastIterations += 1
         if maxIterations and lastIterations > maxIterations:
-            raise NotConvergingError("Not converging")
+            raise NotConvergingError("Not converging", alpha)
         if fbs:
             vecx = x(SFB(M0, fbs, alpha))
         else:
@@ -617,7 +618,7 @@ def newton(M0, *, M1 = None, fbs = None, tol = 10**(-6), maxIterations = None, c
 
 ### Generalized eigenvalues ###
 
-def GEP(M0, *, M1 = None, fbs = None, posdefM1 = True, checkM0 = True):
+def GEP(M0, *, M1=None, fbs=None, posdefM1=True, checkM0=True):
     """
     Implementation of the generalized eigenvalue algorithm.
 
@@ -660,7 +661,7 @@ def GEP(M0, *, M1 = None, fbs = None, posdefM1 = True, checkM0 = True):
         evals = scipy.linalg.eigvals(M0, M0 - M1, check_finite = True)
         return max(ev.real for ev in evals if 0 < ev.real <= 1)
 
-def GEPFB(M0, fbSize = None, which = 2, checkM0 = True):
+def GEPFB(M0, fbSize=None, which=2, checkM0=True):
     """
     A special case implementation of the generalized eigenvalue algorithm
     for correlation matrices (i.e., M0 must have a unit diagonal),
