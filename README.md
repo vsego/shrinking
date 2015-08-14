@@ -34,3 +34,8 @@ License
 ---
 
 See `license.txt` for licensing information.
+
+DOI
+---
+
+[![DOI](https://zenodo.org/badge/17026/vsego/shrinking.svg)](https://zenodo.org/badge/latestdoi/17026/vsego/shrinking)
