@@ -1,41 +1,135 @@
-`shrinking` - a Python Module for Restoring Definiteness via Shrinking
-===
+# shrinking
 
-About
----
+Dedicated to [Nick Higham](https://nhigham.com/).
 
-`shrinking` is a Python module incorporating methods for repairing invalid (indefinite) covariance and correlation matrices, based on the paper Higham, Strabić, Šego, "[Restoring Definiteness via Shrinking, with an Application to Correlation Matrices with a Fixed Block](http://eprints.ma.man.ac.uk/2191/)"
+`shrinking` implements the algorithms from Higham, Strabić, Šego, [*Restoring
+Definiteness via Shrinking, with an Application to Correlation Matrices with a
+Fixed Block*](https://eprints.maths.manchester.ac.uk/2470/).
 
-There is one significant difference between the algorithms in the paper and in this module: the paper handles the cases of both positive definite and positive semidefinite targets, while this module is mostly restricted to the positive definite ones, because the semidefinite case is rarely an issue in practice, and it would significantly complicate the code.
+The package repairs indefinite covariance and correlation matrices by shrinking
+them toward a positive definite target.
 
-The module incorporates the following methods:
+The algorithms were created in 2014. The code was written by Vedran Šego, under
+the supervision of Nick Higham. In 2026, the code was refactored, restyled, and
+adapted for [PyPI](https://pypi.org/) deployment, mostly by OpenAI's Codex
+using the GPT-5.4 model, guided and reviewed by Vedran Šego.
 
-* `bisection` -- the bisection method in its general form,
-* `bisectionFB` -- a variant of the bisection optimised for a 2x2 block-diagonal target with the diagonal blocks either taken from the starting matrix or set to the identity matrix,
-* `newton` -- Newton's method,
-* `GEM` -- the generalized eigenvalue method,
-* `GEMFB` -- a variant of the generalized eigenvalue method optimised for a 2x2 block-diagonal target with the diagonal blocks either taken from the starting matrix or set to the identity matrix.
+## Scope
 
-Various other routines are available in suitably optimized versions:
+This implementation focuses on positive definite targets. The paper also treats
+positive semidefinite targets, but this package keeps the public API to the
+positive definite case in order to keep the implementation and contract
+smaller.
 
-* `checkPD` for checking if a given matrix is positive definite (can be used outside of the shrinking context),
-* `S` for computing `S(alpha)` in a manner appropriate for various types of the input data (each of the variants can also be invoked directly via specialised functions),
-* `x` for computing the eigenvector associated with the smallest eigenvalue (used by Newton's method),
-* `blocks2target` for converting a starting matrix and a diagonal blocks descriptor to an appropriate target matrix.
+## Installation
 
-It is possible to incorporate weights into the target matrix that reflect the confidence with which individual matrix entries are known. See the paper above for details on how to do this.
+```bash
+pip install shrinking
+```
 
-Requirements
----
+## Public API
 
-The module requires `scipy.linalg` from [SciPy](http://www.scipy.org/) and a working LAPACK library. [OpenBLAS](http://www.openblas.net/) proved to be about 1.5-2.5 times faster than [ATLAS](http://math-atlas.sourceforge.net/) with this module (tested on Fedora 20 x86_64).
+The primary API is the snake_case package interface:
 
-License
----
+### Validation and Helpers
 
-See `license.txt` for licensing information.
+- `check_pos_def`: Check whether a matrix is positive definite.
+- `blocks_to_target`: Build the fixed-block target matrix from fixed block
+  sizes.
 
-DOI
----
+### S(alpha) Helpers
 
-[![DOI](https://zenodo.org/badge/17026/vsego/shrinking.svg)](http://dx.doi.org/10.5281/zenodo.28014)
+- `s`: Compute `S(alpha)` from one of the supported target specifications.
+- `s_with_target`: Compute `S(alpha)` from an explicit target matrix.
+- `s_with_difference`: Compute `S(alpha)` from a precomputed target difference.
+- `s_with_fixed_blocks`: Compute `S(alpha)` for a fixed-block target.
+- `s_with_identity`: Compute `S(alpha)` when the target is the identity matrix.
+
+### Algorithms
+
+- `bisection`: Compute the shrinking parameter by the bisection method.
+- `bisection_with_fixed_block`: Run the fixed-block bisection variant.
+- `newton`: Compute the shrinking parameter by Newton's method.
+- `gep`: Compute the shrinking parameter by solving a generalized eigenvalue
+  problem.
+- `gep_with_fixed_block`: Run the fixed-block generalized eigenvalue variant.
+
+Each algorithm also has a `_meta` variant with the same name plus `_meta`,
+which returns an `AlgorithmResult` containing the shrinking parameter `alpha`
+(the same one that the ordinary function returns) and iteration count.
+
+### Compatibility
+
+The legacy API is available under `shrinking.backwards_compatibility`.
+
+The package accepts `numpy.ndarray`, `numpy.matrix`, and plain nested sequence
+inputs. Support for `numpy.matrix` is kept for compatibility with older
+numerical code; for new code, `numpy.ndarray` is the natural default. Plain
+nested sequences are normalized to `numpy.ndarray`, and mixed inputs use array
+semantics unless every input is explicitly a `numpy.matrix`.
+
+## Example
+
+```python
+import numpy as np
+
+from shrinking import bisection
+
+matrix0 = np.array([[1.0, 1.2], [1.2, 1.0]])
+matrix1 = np.identity(2)
+alpha = bisection(matrix0, matrix1=matrix1)
+print(alpha)
+```
+
+## Development
+
+The commands in this section are for a repository checkout, not for a normal
+installed package.
+
+Run the test suite from the repository root with:
+
+```bash
+./run_tests.sh
+```
+
+Locally, the test runner imports the checkout from `src/`. In CI, the workflow
+sets `USE_INSTALLED_PACKAGE=1`, so the tests run against the installed package
+instead.
+
+Remove repository-generated artifacts with:
+
+```bash
+./clean.sh
+```
+
+For the full development tool set used in this repository, including coverage
+and the optional demo dependencies, install the package with the development
+extra:
+
+```bash
+pip install ".[dev]"
+```
+
+Note: installing the sdist in an isolated build environment may download the
+build backend (`hatchling`). For offline checks, preinstall the build backend
+and use `--no-build-isolation`.
+
+For an interactive Python session in the repository with the package import
+path configured:
+
+```bash
+./try_me.sh
+```
+
+To run the demo script from the repository through the same wrapper:
+
+```bash
+./try_me.sh demo_shrinking.py 17 17
+```
+
+The repository also includes a GitHub Actions workflow that installs the
+package and runs the test suite on supported Python versions.
+
+## License
+
+See [`LICENSE`](LICENSE).
