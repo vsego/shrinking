@@ -1,0 +1,69 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "shrinking"
+description = "Repair indefinite covariance and correlation matrices via shrinking methods."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Vedran Sego", email = "vsego@vsego.org" },
+]
+license = "BSD-2-Clause"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Typing :: Typed",
+]
+keywords = ["correlation", "covariance", "matrix", "numerical", "shrinkage"]
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+    "scipy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "coverage",
+    "hatchling",
+    "matplotlib",
+    "pyright",
+    "ruff",
+    "twine",
+]
+
+[project.urls]
+Homepage = "https://github.com/vsego/shrinking"
+"Bug Tracker" = "https://github.com/vsego/shrinking/issues"
+Changelog = "https://github.com/vsego/shrinking/blob/master/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "src/shrinking/version.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/.github"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shrinking"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+extend-select = ["W", "I", "B", "UP", "D401"]
+ignore = ["I001"]
+
+[tool.pyright]
+include = ["src", "tests", "demo_shrinking.py"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+reportMissingImports = false
